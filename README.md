@@ -1,4 +1,4 @@
 depy
 ====
 
-my depency analyzer
+My dependency analyzer
