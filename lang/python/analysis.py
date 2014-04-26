@@ -17,25 +17,33 @@ def analysisImport(txt):
     deps = []
     for line in lines:
         words = line.strip().split()
-        dep = None
+        ndep = []
         if len(words) == 0:
             continue
         elif words[0] == "import":
             if len(words) == 2:
-                dep = MdlDep(words[1], words[1], "")
+# import ABC,DEF
+                mdls = words[1].split(",")
+                ndep = [MdlDep(mdl, mdl, "") for mdl in mdls]
             elif len(words) == 4 and words[2] == "as":
-                dep = MdlDep(words[1], words[3], "")
+# import ABC as DEF
+                ndep.append(MdlDep(words[1], words[3], ""))
             else:
                 raiseError()
         elif words[0] == "from":
             if len(words) == 4 and words[2] == "import":
-                dep = MdlDep(words[3], words[3], words[1])
+                if words[3] == "*":
+# from ABC import *
+                    ndep.append(MdlDep(words[1], words[1], ""))
+                else:
+# from ABC import DEF
+                    ndep.append(MdlDep(words[3], words[3], words[1]))
             elif len(words) == 6 and words[2] == "import" and words[4] == "as":
-                dep = MdlDep(words[3], words[5], words[1])
+# from ABC import DEF as G
+                ndep.append(MdlDep(words[3], words[5], words[1]))
             else:
                 raiseError()
-        if dep:
-            deps.append(dep)
+        deps.extend(ndep)
     return deps
 
 
@@ -68,7 +76,7 @@ def analysisRootFile(filename, d={}):
 
 
 def removeBasicDeps(deps):
-    deps = {k:v for k, v in deps.iteritems() if len(v) != 0}
+    deps = {k: v for k, v in deps.iteritems() if len(v) != 0}
     new = {}
     for k, v in deps.iteritems():
         nv = [i for i in v if i.name in deps.keys()]

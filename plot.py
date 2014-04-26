@@ -1,13 +1,16 @@
 def outputGraphviz(deps, filename="deps.vz"):
     fp = open(filename, "w")
 
-    def writeline(s=""):
-        fp.write(s + "\n")
+    def writeline(s="", offset=""):
+        fp.write(offset + s + "\n")
     writeline("digraph deps{")
+    offset = "    "
     for dep in deps.keys():
-        writeline(dep + ";")
+        writeline(dep + ";", offset)
     writeline()
     for dep, v in deps.iteritems():
-        writeline("%s -> {%s};" % (dep, " ".join([f.name for f in v])))
+        if len(v) == 0:
+            continue
+        writeline("%s -> {%s};" % (dep, " ".join([f.name for f in v])), offset)
     writeline("}")
     fp.close()
