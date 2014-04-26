@@ -17,33 +17,31 @@ def analysisImport(txt):
     deps = []
     for line in lines:
         words = line.strip().split()
-        ndep = []
         if len(words) == 0:
             continue
         elif words[0] == "import":
             if len(words) == 2:
 # import ABC,DEF
                 mdls = words[1].split(",")
-                ndep = [MdlDep(mdl, mdl, "") for mdl in mdls]
+                deps.extend([MdlDep(mdl, mdl, "") for mdl in mdls])
             elif len(words) == 4 and words[2] == "as":
 # import ABC as DEF
-                ndep.append(MdlDep(words[1], words[3], ""))
+                deps.append(MdlDep(words[1], words[3], ""))
             else:
                 raiseError()
         elif words[0] == "from":
             if len(words) == 4 and words[2] == "import":
                 if words[3] == "*":
 # from ABC import *
-                    ndep.append(MdlDep(words[1], words[1], ""))
+                    deps.append(MdlDep(words[1], words[1], ""))
                 else:
 # from ABC import DEF
-                    ndep.append(MdlDep(words[3], words[3], words[1]))
+                    deps.append(MdlDep(words[3], words[3], words[1]))
             elif len(words) == 6 and words[2] == "import" and words[4] == "as":
 # from ABC import DEF as G
-                ndep.append(MdlDep(words[3], words[5], words[1]))
+                deps.append(MdlDep(words[3], words[5], words[1]))
             else:
                 raiseError()
-        deps.extend(ndep)
     return deps
 
 
