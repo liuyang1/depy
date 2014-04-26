@@ -1,5 +1,6 @@
 def outputGraphviz(deps, filename="deps.vz"):
     fp = open(filename, "w")
+
     def writeline(s=""):
         fp.write(s + "\n")
     writeline("digraph deps{")
@@ -7,7 +8,6 @@ def outputGraphviz(deps, filename="deps.vz"):
         writeline(dep + ";")
     writeline()
     for dep, v in deps.iteritems():
-        for f in v:
-            writeline("%s -> %s;" % (dep, f.name))
+        writeline("%s -> {%s};" % (dep, " ".join([f.name for f in v])))
     writeline("}")
     fp.close()

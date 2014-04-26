@@ -78,4 +78,4 @@ def removeBasicDeps(deps):
 if __name__ == "__main__":
     deps = analysisRootFile("/home/liuy/git/gx/pusher/src/pusher.py")
     deps = removeBasicDeps(deps)
-    plot.outputGraphviz(deps)
+    plot.outputGraphviz(deps, filename="rm.vz")
